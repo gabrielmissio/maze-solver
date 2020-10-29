@@ -4,20 +4,26 @@
 
 using namespace std;
 
-/*
-0 = livre
-1 = parede
-2 = visitado
-3 = beco
+/*labrinto
+' ' = livre
+'+' = parede
+'.' = visitado
+'*' = beco
 */
 
-bool typeLab = true;
+/*Status do labrindo
+0 = explorando
+1 = labrindo sem solução
+2 =  labrindo concluido
+*/
+
+int typeLab = 0;
 const int n = 15;
 char lab[n][n];
 
 typedef struct _nodo{
-	int x = 1;
-	int y = 1;
+	int x;
+	int y;
 	struct _nodo *next;
 	struct _nodo *retorno;
 }Pilha;
@@ -117,70 +123,61 @@ void encontrarSaida(Pilha *aux){
 	while(temp->next != NULL){
 		temp = temp->next;
 	}
-	if(lab[temp->x +1][temp->y] == ' '){
+	if((temp->x == 13 && temp->y == 13) || lab[n-2][n-2] == 'C'){
+		typeLab = 2;
+	}else if(lab[temp->x +1][temp->y] == ' ' || lab[temp->x +1][temp->y] == '$'){
 		push(temp, temp->x+1, temp->y);
-	}else if(lab[temp->x][temp->y + 1] == ' '){
+	}else if(lab[temp->x][temp->y + 1] == ' ' || lab[temp->x][temp->y + 1] == '$'){
 		push(temp, temp->x, temp->y + 1);
 	}else if(lab[temp->x][temp->y - 1] == ' '){
 		push(temp, temp->x, temp->y - 1);
 	}else if(lab[temp->x - 1][temp->y] == ' '){
 		push(temp, temp->x - 1, temp->y);
 	}else if((lab[temp->x +1][temp->y] == '+') && (lab[temp->x][temp->y + 1] == '+') && (lab[temp->x][temp->y - 1] == '+') && (lab[temp->x - 1][temp->y] == '+')){
-		cout<<"\n\nLabrinto sem solucao cod1"<<endl;
-		typeLab = false;
-	}else if((lab[1][1] == 'C') && (lab[2][1] == '.' || lab[2][1] == '.')){
-		cout<<"\n\nLabrinto sem solucao cod2"<<endl;
-		typeLab = false;
-	}else if(temp->x == 13 && temp->y == 13){
-		cout<<"\n\nAchouuuuuu2"<<endl;
-		typeLab = false;
-	}
-	else{
+		typeLab = 1;
+	}else if((lab[1][1] == 'C') && (lab[2][1] == '.' || lab[1][2] == '.')){
+		typeLab = 1;
+	}else{
 		pop(aux);
 	}
-	/*
-	else if((temp->x == 1  && temp->y == 1) && (lab[temp->x + 1][temp->y] == '.' && lab[temp->x][temp->y + 1] == '.')){
-		cout<<"\n\nLabrinto sem solucao cod2"<<endl;
-	}
-	*/
+
+	
+}
+
+void run(){
+	
+		typeLab = 0;
+		Pilha *pilha = new Pilha;
+		criarLab();
+		printLab();
+		pilha->next = NULL;
+		pilha->x = 1;
+		pilha->y = 1;
+		pilha->retorno = NULL;
+		
+		while(typeLab == 0){
+			printLab();	
+			encontrarSaida(pilha);
+			//printLab();	
+		}
+		if(typeLab == 2){
+			cout<<"\n\nLabrinto concluido!"<<endl;
+			cout<<"\n\nSolucao encontrada: "<<endl;
+			printStack(pilha);
+		}else{
+			cout<<"\n\nLabrinto sem solucao"<<endl;
+		} 
+	
 	
 }
 
 int main(){
-	criarLab();
-	printLab();
-	Pilha *pilha = new Pilha;
-	pilha->next = NULL;
-	pilha->x = 1;
-	pilha->y = 1;
-	pilha->retorno = NULL;
-	
-	while(typeLab){
-		printLab();	
-		encontrarSaida(pilha);
-		//printLab();	
-	}
-	
-	//encontrarSaida(pilha);
-	//printLab();
-
-	
-
-
-
-/*
-	push(pilha, 1,1);
-	push(pilha, 1,2);
-	push(pilha, 2,2);
-	push(pilha, 3,2);
-	pop(pilha);
-	pop(pilha);
-	push(pilha, 5,9);
-//	pop(pilha);
-*/
-	printStack(pilha);
-//	push(pilha, 10,10);
-//	printStack(pilha);
+	int opcoes = 0;
+	do{
+	run();
+	cout<<"\n\nTecle 0 para gerar um novo labrinto: ";
+	cin>>opcoes;
+	}while(opcoes == 0);
 
 	return 0;
 }
