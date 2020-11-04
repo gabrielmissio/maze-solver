@@ -1,6 +1,9 @@
+
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <unistd.h>//para utilizar a função usleep (linux)
+
 
 using namespace std;
 
@@ -17,18 +20,17 @@ using namespace std;
 2 =  labrindo concluido
 */
 
-int typeLab = 0;
-const int n = 15;
+int typeLab = 0;//status do labrindo
+const int n = 10;//tamanho do labrinto
 char lab[n][n];
 
-typedef struct _nodo{
+typedef struct _nodo{//nodo para locomoção e armazenamento caminho do labrinto
 	int x;
 	int y;
 	struct _nodo *next;
-	struct _nodo *retorno;
 }Pilha;
 
-void printStack(Pilha *temp){
+void printStack(Pilha *temp){//função para mostrar a lista encadeada
 	Pilha *aux;
 	aux = temp;
 	while(aux != NULL){
@@ -37,7 +39,7 @@ void printStack(Pilha *temp){
 	}
 }
 
-void push(Pilha *temp, int x, int y){
+void push(Pilha *temp, int x, int y){//função para adicionar um nodo no final da lista
 	Pilha *aux = temp;
 	while(aux->next != NULL){
 		aux = aux->next;
@@ -47,14 +49,12 @@ void push(Pilha *temp, int x, int y){
 	aux->next->y = y;
 	aux->next->next = NULL;
 	// fim do push
-//	temp->next->x = x;
-//	temp->next->y = y;
 	lab[x][y] = 'C';
 	lab[temp->x][temp->y] = '.';
 
 }
 
-void pop(Pilha *temp){
+void pop(Pilha *temp){//função para remover o ultimo nodo da lista
 	Pilha *aux = temp;
 	while(aux->next->next != NULL){
 		aux = aux->next;
@@ -65,8 +65,9 @@ void pop(Pilha *temp){
 	
 }
 
-void printLab(){
-	system("cls");
+void printLab(){//função para mostrar o labrinto
+	system("clear");//para linux
+	//system("cls"); para windows
 	cout<<" "<<endl;
 	int i;
 	int j;
@@ -78,7 +79,7 @@ void printLab(){
 	}
 }
 
-void criarLab(){
+void criarLab(){//função para criar um labrinto aleatorio
 	int i;
 	int j;
 	srand((unsigned)time(0));
@@ -108,22 +109,14 @@ void criarLab(){
 	
 }
 
-void enpilhar(Pilha *temp, int x, int y){
-	temp->next = new Pilha;
-	temp->next->next = NULL;
-	temp->next->x = x;
-	temp->next->y = y;
-	lab[x][y] = 'C';
-	lab[temp->x][temp->y] = '.';
-		
-}
 
-void encontrarSaida(Pilha *aux){
+void encontrarSaida(Pilha *aux){//função para checar o status da posição atual e saber como proceder
+	usleep(100000);//usar para linux
 	Pilha *temp = aux;
 	while(temp->next != NULL){
 		temp = temp->next;
 	}
-	if((temp->x == 13 && temp->y == 13) || lab[n-2][n-2] == 'C'){
+	if(lab[n-2][n-2] == 'C'){
 		typeLab = 2;
 	}else if(lab[temp->x +1][temp->y] == ' ' || lab[temp->x +1][temp->y] == '$'){
 		push(temp, temp->x+1, temp->y);
@@ -153,7 +146,6 @@ void run(){
 		pilha->next = NULL;
 		pilha->x = 1;
 		pilha->y = 1;
-		pilha->retorno = NULL;
 		
 		while(typeLab == 0){
 			printLab();	
@@ -175,7 +167,7 @@ int main(){
 	int opcoes = 0;
 	do{
 	run();
-	cout<<"\n\nTecle 0 para gerar um novo labrinto: ";
+	cout<<"\n\nTecle '0' para gerar um novo labrinto: ";
 	cin>>opcoes;
 	}while(opcoes == 0);
 
