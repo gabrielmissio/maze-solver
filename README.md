@@ -1,10 +1,20 @@
-# labirinto-pilha
-c++
+# Maze Solver
 
-#Objetivo
-Criar um labirinto aleatorio com N posições e percorre-lo tentando encontrar a solução.
-As pocições são armazenas em uma pilha. A função PUSH é chamada sempre que necessario avançar uma posição e a função POP sempre que necessario retornar uma posição
+Maze Solver is a simple program that generates a random maze and tries to find a solution using a stack-based algorithm.
 
-#Objective
-Create a random labyrinth with N positions and walk through it trying to find a way out.
-The positions are stored in a stack. The PUSH function is called whenever it is necessary to advance a position and the POP funtion whenever it is necessary to return a position
+## Usage
+
+To use Maze Solver, simply download or clone the repository and compile the maze_solver.cpp file using a C++ compiler. Then run the executable to generate a random maze and see the solution path.
+
+## Dependencies
+
+Maze Solver requires a C++ compiler and the following libraries:
+
+ - iostream
+ - cstdlib
+ - ctime
+ - unistd.h
+
+## How it Works
+
+Maze Solver generates a random maze using a depth-first search algorithm, and then tries to find a solution using a stack-based algorithm. The algorithm works by starting at the entrance of the maze and exploring the adjacent cells, adding them to a stack if they are unexplored. When a dead end is reached, the algorithm backtracks to the previous cell on the stack and continues exploring.
